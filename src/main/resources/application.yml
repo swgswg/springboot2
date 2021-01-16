@@ -1,0 +1,51 @@
+server:
+  port: 8081
+
+debug: false
+
+spring:
+  mvc:
+    static-path-pattern: "/resources/**"
+
+  datasource:
+    url: jdbc:mysql://localhost:3306/blog?characterEncoding=utf-8&serverTimezone=UTC&useSSL=false
+    username: root
+    password:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  redis:
+    host: 39.107.36.7
+    port: 6379
+
+  jackson:
+    time-zone: Asia/Shanghai
+    date-format: yyyy-MM-dd HH:mm:ss
+
+mybatis:
+  mapper-locations: classpath:mapper/*.xml
+  configuration:
+    #启用驼峰命名
+    map-underscore-to-camel-case: true
+
+logging:
+  #包的日志级别
+  level:
+    root: warn
+    com.example: info
+    org.springframework: warn
+  #自定义log信息
+  config: classpath:config/logback.xml
+  pattern:
+    #控制台的日志输出格式
+    console: '%d{yyyy/MM/dd-HH:mm:ss} [%thread] %-5level %logger- %msg%n'
+    #文件的日志输出格式
+    file: '%d{yyyy/MM/dd-HH:mm} [%thread] %-5level %logger- %msg%n'
+  file:
+    #日志名称
+    name: app.log
+  logback:
+    rollingpolicy:
+      #存储的最大值
+      max-file-size: 50MB
+      #保存时间
+      max-history: 7

@@ -1,0 +1,13 @@
+package com.example.validation.user;
+
+import com.example.model.user.User;
+import com.example.validation.BaseValidation;
+import lombok.Data;
+
+import javax.validation.Valid;
+
+@Data
+public class AddValidation extends BaseValidation {
+    @Valid
+    private User user;
+}
