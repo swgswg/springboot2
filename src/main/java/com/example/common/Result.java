@@ -3,6 +3,7 @@ package com.example.common;
 import com.example.constant.ErrorCode;
 import lombok.Data;
 import lombok.ToString;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
@@ -67,7 +68,7 @@ public class Result implements Serializable {
      * @return
      */
     public static Result result(ErrorCode errorCode) {
-        return result(errorCode.getCode(), errorCode.getDesc(), null);
+        return result(errorCode, "", null);
     }
 
 
@@ -77,7 +78,7 @@ public class Result implements Serializable {
      * @return
      */
     public static Result result(ErrorCode errorCode, Object data) {
-        return result(errorCode.getCode(), errorCode.getDesc(), data);
+        return result(errorCode, "", data);
     }
 
 
@@ -87,7 +88,7 @@ public class Result implements Serializable {
      * @return
      */
     public static Result result(ErrorCode errorCode, String message) {
-        return result(errorCode.getCode(), message, null);
+        return result(errorCode, message, null);
     }
 
     /**
@@ -96,6 +97,9 @@ public class Result implements Serializable {
      * @return
      */
     public static Result result(ErrorCode errorCode, String message, Object data) {
+        if (StringUtils.isBlank(message)) {
+            message = errorCode.getDesc();
+        }
         return result(errorCode.getCode(), message, data);
     }
 
@@ -105,7 +109,7 @@ public class Result implements Serializable {
      * @return
      */
     public static Result result(HttpStatus httpStatus) {
-        return result(httpStatus.value(), httpStatus.getReasonPhrase(), null);
+        return result(httpStatus, "");
     }
 
     /**
@@ -114,6 +118,9 @@ public class Result implements Serializable {
      * @return
      */
     public static Result result(HttpStatus httpStatus, String message) {
+        if (StringUtils.isBlank(message)) {
+            message = httpStatus.getReasonPhrase();
+        }
         return result(httpStatus.value(), message, null);
     }
 

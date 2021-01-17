@@ -14,12 +14,50 @@
         <result column="lastLogin" property="lastLogin" jdbcType="TIMESTAMP"/>
     </resultMap>
 
+    <sql id="defaultSelectUser">
+         select * from m_user
+    </sql>
+
     <!--public User getUser(Long id);-->
     <select id="getUser" resultType="com.example.model.user.User">
-        select * from m_user where id = #{id}
+        <include refid="defaultSelectUser" ></include>
+         where id = #{id}
+    </select>
+
+    <!--
+    <select id="all" parameterType="com.example.model.user.User" resultMap="UserMap">
+        select * from m_user where 1=1
+        <if test="id != null">
+            and id = #{id}
+        </if>
+    </select>
+    -->
+
+    <select id="all" parameterType="com.example.model.user.User" resultMap="UserMap">
+        <include refid="defaultSelectUser"></include>
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+        </where>
+    </select>
+
+    <select id="getByIds" resultMap="UserMap" parameterType="com.example.model.user.QueryVo">
+        <include refid="defaultSelectUser"></include>
+        <where>
+            <if test="ids != null and ids.size() > 0">
+                <foreach collection="ids" open="and id in (" close=")" item="id" separator=",">
+                    #{id}
+                </foreach>
+            </if>
+        </where>
     </select>
 
     <insert id="create" parameterType="com.example.model.user.User">
+        <!-- keyProperty代表要返回的值名称 order取值AFTER代表插入后的行为 resultType代表返回值的类型-->
+        <selectKey keyProperty="id" order="AFTER" resultType="long">
+            select last_insert_id();
+        </selectKey>
 	    INSERT INTO  m_user
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="username != null">
@@ -87,4 +125,29 @@
         </set>
         where id = ${id}
     </update>
+    
+    <delete id="delete" parameterType="java.lang.Long">
+        delete from m_user where id = #{id}
+    </delete>
+
+    <select id="count" parameterType="long" resultType="long">
+        select count(*) from m_user
+    </select>
+
+    <!-- 定义User的resultMap-->
+    <resultMap id="userAccountMap" type="com.example.model.user.User">
+        <id property="id" column="id"></id>
+        <result property="username" column="username"></result>
+        <!-- 配置user对象中accounts集合的映射 -->
+        <collection property="accounts" ofType="com.example.model.account.Account">
+            <id column="aid" property="id"></id>
+            <result column="uid" property="uid"></result>
+            <result column="money" property="money"></result>
+        </collection>
+    </resultMap>
+
+    <!-- 查询所有 -->
+    <select id="userAccount" resultMap="userAccountMap">
+        select u.*,a.id as aid, a.uid, a.money from m_user u left join m_account a on u.id = a.uid
+    </select>
 </mapper>
