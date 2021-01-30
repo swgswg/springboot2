@@ -8,8 +8,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import javax.annotation.PostConstruct;
 import java.util.TimeZone;
 
-@SpringBootApplication
+
 @MapperScan("com.example.mapper")
+@SpringBootApplication
 public class Springboot2Application {
 
     @PostConstruct

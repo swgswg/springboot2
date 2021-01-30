@@ -2,7 +2,6 @@ package com.example.exception.work;
 
 import com.example.constant.ErrorCode;
 import com.example.exception.ApiException;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -13,18 +12,19 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-public class JwtException extends ApiException {
-    ErrorCode errorCode = ErrorCode.ILLEGAL_TOKEN;
+public class FileUploadException extends ApiException {
+    ErrorCode errorCode = ErrorCode.FILE_UPLOAD_ERROR;
 
-    public JwtException(String message) {
+    public FileUploadException(String message) {
         super(message);
     }
 
-    public JwtException(ErrorCode errorCode) {
+    public FileUploadException(ErrorCode errorCode) {
         this.errorCode = errorCode;
     }
 
-    public JwtException(ErrorCode errorCode, String message) {
+    public FileUploadException(ErrorCode errorCode, String message) {
         super(errorCode, message);
     }
+
 }

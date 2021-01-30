@@ -13,6 +13,7 @@ import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
+import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -22,6 +23,8 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
@@ -41,7 +44,7 @@ public class ExceptionHandle {
     @ResponseStatus(value = HttpStatus.OK)
     @ExceptionHandler(value = ApiException.class)
     @ResponseBody
-    public Result handle(ApiException e) {
+    public Result apiExceptionHandle(ApiException e) {
         return Result.fail(e.getErrorCode(), e.getMessage());
     }
 
@@ -68,6 +71,11 @@ public class ExceptionHandle {
         return Result.fail(ErrorCode.NOT_READABLE, "请求参数异常");
     }
 
+
+    /**
+     * @param e
+     * @return
+     */
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(InvalidFormatException.class)
     public Result invalidFormatExceptionHandler(InvalidFormatException e){
@@ -85,6 +93,7 @@ public class ExceptionHandle {
      * @param e
      * @return
      */
+    @ResponseStatus(HttpStatus.OK)
     @ExceptionHandler(ConstraintViolationException.class)
     @ResponseBody
     public Result constraintViolationExceptionHandler(ConstraintViolationException e){
@@ -93,7 +102,7 @@ public class ExceptionHandle {
         message.stream().forEach(msg -> {
             String path = msg.getPropertyPath().toString();
             String field = path.substring(path.indexOf(".")+1);
-            map.put(field,msg.getMessageTemplate());
+            map.put(field, msg.getMessageTemplate());
         });
         return Result.fail(ErrorCode.ILLEGAL_ARGUMENT, map.toString());
     }
@@ -106,23 +115,34 @@ public class ExceptionHandle {
      */
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
+    @ResponseBody
     public Result parameterExceptionHandler(MethodArgumentNotValidException e) {
-        BindingResult exceptions = e.getBindingResult();
+        BindingResult bindingResult  = e.getBindingResult();
         // 判断异常中是否有错误信息，如果存在就使用异常中的消息，否则使用默认消息
-        if (exceptions.hasErrors()) {
-            List<ObjectError> errors = exceptions.getAllErrors();
-            System.out.println(errors);
-            StringBuilder message = new StringBuilder();
+        if (bindingResult .hasErrors()) {
+            List<ObjectError> errors = bindingResult.getAllErrors();
+            HashMap<String, Object> message = new HashMap<>();
             if (!errors.isEmpty()) {
                 for (ObjectError error: errors) {
                     FieldError fieldError = (FieldError) error;
-                    String errorMessage = fieldError.getField() + ":" + error.getDefaultMessage();
-                    message.append(errorMessage) . append(",");
+                    message.put(fieldError.getField(),  error.getDefaultMessage());
                 }
-                return Result.fail(ErrorCode.ILLEGAL_ARGUMENT, message.substring(0, message.length() - 1));
+                return Result.fail(ErrorCode.ILLEGAL_ARGUMENT, message.toString());
             }
         }
         return Result.fail(ErrorCode.ILLEGAL_ARGUMENT);
+    }
+
+    /**
+     * 请求类型不支持
+     * @param e
+     * @return
+     */
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(HttpMediaTypeNotSupportedException.class)
+    @ResponseBody
+    public Result httpMediaTypeNotSupportedExceptionHandler(HttpMediaTypeNotSupportedException e) {
+        return Result.fail(ErrorCode.HTTP_MEDIA_TYPE_NOT_SUPPORTED, e.getMessage());
     }
 
 
@@ -134,7 +154,7 @@ public class ExceptionHandle {
     @ResponseStatus(value = HttpStatus.BAD_REQUEST)
     @ExceptionHandler(value = BadRequestException.class)
     @ResponseBody
-    public Result handle(BadRequestException e) {
+    public Result badRequestExceptionHandle(BadRequestException e) {
         log.error("httpStatus异常: " + e.getHttpStatus());
         return Result.result(e.getHttpStatus());
     }
@@ -148,7 +168,7 @@ public class ExceptionHandle {
     @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(value = ServerErrorException.class)
     @ResponseBody
-    public Result handle(ServerErrorException e) {
+    public Result serverErrorExceptionHandle(ServerErrorException e) {
         log.error("httpStatus异常: " + e.getHttpStatus());
         return Result.result(e.getHttpStatus());
     }
@@ -162,7 +182,7 @@ public class ExceptionHandle {
     @ResponseStatus(value = HttpStatus.BAD_REQUEST)
     @ExceptionHandler(value = Exception.class)
     @ResponseBody
-    public Result handle(Exception e) {
+    public Result exceptionHandle(Exception e) {
         if (e instanceof HttpMessageNotReadableException) {
             return Result.result(HttpStatus.BAD_REQUEST, e.getMessage().substring(0, e.getMessage().indexOf(":")));
         }

@@ -10,6 +10,9 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * @author song
+ */
 @Component
 public class TokenMiddleware extends BaseMiddleware {
     @Autowired
@@ -26,19 +29,8 @@ public class TokenMiddleware extends BaseMiddleware {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
         // 校验token
         String token = request.getHeader("token");
-        System.out.println(token);
         jwtService.decode(token);
         return true;
-    }
-
-    @Override
-    public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws Exception {
-
-    }
-
-    @Override
-    public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
-
     }
 
 }

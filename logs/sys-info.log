@@ -1,0 +1,3 @@
+11:32:38.930 [restartedMain] INFO  c.e.Springboot2Application - [logStarting,55] - Starting Springboot2Application using Java 11.0.7 on SkyGod with PID 17184 (E:\install\IntelliJ-IDEA\Code\springboot2\target\classes started by song in E:\install\IntelliJ-IDEA\Code\springboot2)
+11:32:38.934 [restartedMain] INFO  c.e.Springboot2Application - [logStartupProfileInfo,660] - No active profile set, falling back to default profiles: default
+11:32:46.473 [restartedMain] INFO  c.e.Springboot2Application - [logStarted,61] - Started Springboot2Application in 8.702 seconds (JVM running for 12.3)

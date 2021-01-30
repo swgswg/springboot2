@@ -1,6 +1,6 @@
 package com.example.validation;
 
-import com.example.exception.IllegalArgumentException;
+import com.example.exception.work.IllegalArgumentException;
 import lombok.Data;
 import org.apache.commons.collections.CollectionUtils;
 

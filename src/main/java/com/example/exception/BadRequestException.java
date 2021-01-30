@@ -12,12 +12,19 @@ import org.springframework.http.HttpStatus;
  */
 @Data
 @NoArgsConstructor
-@AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 public class BadRequestException extends HttpException {
     HttpStatus httpStatus = HttpStatus.BAD_REQUEST;
 
     public BadRequestException(String message) {
         super(message);
+    }
+
+    public BadRequestException(HttpStatus httpStatus) {
+        super(httpStatus);
+    }
+
+    public BadRequestException(HttpStatus httpStatus, String message) {
+        super(httpStatus, message);
     }
 }

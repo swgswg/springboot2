@@ -1,5 +1,6 @@
 package com.example.exception;
 
+import com.example.constant.ErrorCode;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -19,6 +20,11 @@ public class HttpException extends RuntimeException {
     }
 
     public HttpException(HttpStatus httpStatus) {
+        this.httpStatus = httpStatus;
+    }
+
+    public HttpException(HttpStatus httpStatus, String message) {
+        super(message);
         this.httpStatus = httpStatus;
     }
 }

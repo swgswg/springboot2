@@ -2,8 +2,8 @@ package com.example.controller.v1;
 
 import com.example.common.Result;
 import com.example.controller.BaseController;
-import com.example.model.Delete;
 import com.example.model.Insert;
+import com.example.model.Page;
 import com.example.model.Select;
 import com.example.model.Update;
 import com.example.model.user.QueryVo;
@@ -19,9 +19,9 @@ import org.springframework.web.bind.annotation.*;
  * @author song
  */
 @RestController
-@RequestMapping("/v1/user")
+@RequestMapping("/api/v1/user")
 @Validated
-public class UserController extends BaseController {
+public class UserController extends V1BaseController {
     @Autowired
     UserRepo userRepo;
 
@@ -63,5 +63,10 @@ public class UserController extends BaseController {
     @PostMapping("/user-account")
     public Result userAccount() {
         return this.success(userRepo.userAccount());
+    }
+
+    @PostMapping("/page")
+    public Result page(@RequestBody Page pageQuery) {
+        return this.success(userRepo.findPage(pageQuery));
     }
 }

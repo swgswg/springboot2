@@ -12,12 +12,19 @@ import org.springframework.http.HttpStatus;
  */
 @Data
 @NoArgsConstructor
-@AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 public class ServerErrorException extends HttpException {
     HttpStatus httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
 
     public ServerErrorException(String message) {
         super(message);
+    }
+
+    public ServerErrorException(HttpStatus httpStatus) {
+        super(httpStatus);
+    }
+
+    public ServerErrorException(HttpStatus httpStatus, String message) {
+        super(httpStatus, message);
     }
 }

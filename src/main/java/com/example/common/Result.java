@@ -9,10 +9,18 @@ import org.springframework.stereotype.Component;
 
 import java.io.Serializable;
 
+/**
+ * @author song
+ */
 @Data
 @ToString
 @Component
 public class Result implements Serializable {
+
+    /**
+     * 状态
+     */
+    private boolean status;
 
     /**
      * 自定义错误码
@@ -36,7 +44,7 @@ public class Result implements Serializable {
      * @return
      */
     public static Result success(Object data) {
-        return result(ErrorCode.SUCCESS, data);
+        return result(true, ErrorCode.SUCCESS, data);
     }
 
     /**
@@ -45,7 +53,7 @@ public class Result implements Serializable {
      * @return
      */
     public static Result success(Object data, String message) {
-        return result(ErrorCode.SUCCESS, message, data);
+        return result(true, ErrorCode.SUCCESS, message, data);
     }
 
 
@@ -55,11 +63,11 @@ public class Result implements Serializable {
      * @return
      */
     public static Result fail(ErrorCode errorCode) {
-        return result(errorCode);
+        return result(false, errorCode);
     }
 
     public static Result fail(ErrorCode errorCode, String message) {
-        return result(errorCode, message);
+        return result(false, errorCode, message);
     }
 
 
@@ -67,8 +75,8 @@ public class Result implements Serializable {
      * @param errorCode
      * @return
      */
-    public static Result result(ErrorCode errorCode) {
-        return result(errorCode, "", null);
+    public static Result result(boolean status, ErrorCode errorCode) {
+        return result(status, errorCode, "", null);
     }
 
 
@@ -77,8 +85,8 @@ public class Result implements Serializable {
      * @param data
      * @return
      */
-    public static Result result(ErrorCode errorCode, Object data) {
-        return result(errorCode, "", data);
+    public static Result result(boolean status, ErrorCode errorCode, Object data) {
+        return result(status, errorCode, "", data);
     }
 
 
@@ -87,8 +95,8 @@ public class Result implements Serializable {
      * @param message
      * @return
      */
-    public static Result result(ErrorCode errorCode, String message) {
-        return result(errorCode, message, null);
+    public static Result result(boolean status, ErrorCode errorCode, String message) {
+        return result(status, errorCode, message, null);
     }
 
     /**
@@ -96,11 +104,11 @@ public class Result implements Serializable {
      * @param message
      * @return
      */
-    public static Result result(ErrorCode errorCode, String message, Object data) {
+    public static Result result(boolean status, ErrorCode errorCode, String message, Object data) {
         if (StringUtils.isBlank(message)) {
             message = errorCode.getDesc();
         }
-        return result(errorCode.getCode(), message, data);
+        return result(status, errorCode.getCode(), message, data);
     }
 
     /**
@@ -121,7 +129,7 @@ public class Result implements Serializable {
         if (StringUtils.isBlank(message)) {
             message = httpStatus.getReasonPhrase();
         }
-        return result(httpStatus.value(), message, null);
+        return result(false ,httpStatus.value(), message, null);
     }
 
 
@@ -132,8 +140,9 @@ public class Result implements Serializable {
      * @param data
      * @return
      */
-    public static Result result(int state, String message, Object data) {
+    public static Result result(boolean status, int state, String message, Object data) {
         Result result = new Result();
+        result.setStatus(status);
         result.setState(state);
         result.setMessage(message);
         result.setData(data);

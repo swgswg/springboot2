@@ -8,6 +8,7 @@ import com.example.model.*;
 import com.example.model.account.Account;
 import com.example.validation.validator.Enumeration;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.stereotype.Component;
@@ -39,6 +40,7 @@ public class User extends BaseModel {
     private String username;
 
     @Length(max=125, message = "头像最大长度为125位")
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private String avatar;
 
     @Enumeration(enumClass = UserStatusEnum.class)
@@ -55,11 +57,11 @@ public class User extends BaseModel {
     private String password;
 
     @Future(message = "创建时间不正确")
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", locale = "zh", timezone = "GMT+8")
     private Date created;
 
     @Future(message = "登录时间不正确")
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", locale = "zh", timezone = "GMT+8")
     private Date lastLogin;
 
     private List<Account> accounts;

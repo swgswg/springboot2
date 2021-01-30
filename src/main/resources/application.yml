@@ -5,7 +5,7 @@ debug: false
 
 spring:
   mvc:
-    static-path-pattern: "/resources/**"
+    static-path-pattern: /resources/**
 
   datasource:
     url: jdbc:mysql://localhost:3306/blog?characterEncoding=utf-8&serverTimezone=UTC&useSSL=false
@@ -16,6 +16,17 @@ spring:
   redis:
     host: 39.107.36.7
     port: 6379
+    database: 0
+    #连接超时/毫秒
+    timeout: 3000
+    lettuce:
+      pool:
+        #连接池最下空闲连接, 默认0
+        min-idle: 5
+        #-1不限制,
+        max-active: 200
+        #等待可用连接最大时间/毫秒, 默认值-1(永不超时)
+        max-wait: 1000
 
   jackson:
     time-zone: Asia/Shanghai
@@ -26,12 +37,27 @@ mybatis:
   configuration:
     #启用驼峰命名
     map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+#mybatis-plus:
+#  mapper-locations: classpath:/mapper/**/*.xml
+#  global-config:
+#    db-config:
+#      id-type: auto
+
+
+# pagehelper
+pagehelper:
+  helperDialect: mysql
+  reasonable: true
+  supportMethodsArguments: true
+  params: count=countSql
 
 logging:
   #包的日志级别
   level:
     root: warn
-    com.example: info
+    com.example: warn
     org.springframework: warn
   #自定义log信息
   config: classpath:config/logback.xml

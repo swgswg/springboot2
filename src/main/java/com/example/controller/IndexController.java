@@ -19,21 +19,19 @@ import java.util.Map;
 /**
  * @author song
  */
-@RestController
-@RequestMapping("/")
 @Validated
+@RequestMapping("/")
+@RestController
 public class IndexController extends BaseController {
     @Autowired
     UserRepo userRepo;
 
     @RequestMapping(value = "/index")
-    @ResponseBody
     public Result index() {
         return this.success("11111");
     }
 
     @RequestMapping(value = "/suc")
-    @ResponseBody
 //    @LogAnnotation(description = "获取所有用户信息", clazz = User.class)
     public Result suc(HttpServletRequest request) {
 //        HttpServletRequestUtil.getParam(request);
@@ -49,7 +47,6 @@ public class IndexController extends BaseController {
 
 
     @RequestMapping(value = "/succ")
-    @ResponseBody
     public Result succ(@RequestBody Map<String, Object> params) {
         System.out.println(params.get("c"));
         return this.success(params);
@@ -57,7 +54,6 @@ public class IndexController extends BaseController {
 
 
     @RequestMapping(value = "/valid")
-    @ResponseBody
     public Result verifyValid(@Valid @RequestBody IdMustBePositiveInteger id) {
         return this.success(id);
     }

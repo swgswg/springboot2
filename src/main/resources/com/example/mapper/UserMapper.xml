@@ -150,4 +150,8 @@
     <select id="userAccount" resultMap="userAccountMap">
         select u.*,a.id as aid, a.uid, a.money from m_user u left join m_account a on u.id = a.uid
     </select>
+
+    <select id="selectPage" resultMap="UserMap">
+        select * from m_user
+    </select>
 </mapper>

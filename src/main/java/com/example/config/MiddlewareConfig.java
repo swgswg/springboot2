@@ -1,6 +1,5 @@
 package com.example.config;
 
-import com.example.middleware.ResultMiddleware;
 import com.example.middleware.TokenMiddleware;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
@@ -19,6 +18,7 @@ public class MiddlewareConfig implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(tokenMiddleware).addPathPatterns(tokenMiddleware.router());
+        WebMvcConfigurer.super.addInterceptors(registry);
     }
 
 }

@@ -6,14 +6,17 @@ package com.example.constant;
  */
 
 public enum ErrorCode {
-    //10  开头为 通用错误
-    SUCCESS(100000, "请求成功"),
-    FAIL(100001, "请求失败"),
+    // 成功 失败
+    SUCCESS(1000, "请求成功"),
+    FAIL(1001, "请求失败"),
+
+    // 10  开头为 通用错误
     ILLEGAL_ARGUMENT(100002, "无效的请求参数"),
     ILLEGAL_TOKEN(100003, "令牌不合法"),
     NOT_READABLE(100004, "缺少请求体"),
     INVALID_FORMAT(100005, "请求参数不合法"),
-
+    HTTP_CLIENT_ERROR(100006, "HTTP客户端错误"),
+    HTTP_MEDIA_TYPE_NOT_SUPPORTED(100007, "HTTP请求类型不支持"),
 //    100004 => '尝试非法操作',
 //    100005 => '无权限访问',
 //    100006 => '授权失败（第三方应用账号登陆失败)',
@@ -25,12 +28,19 @@ public enum ErrorCode {
 //    100013 => '速率限制错误',
 //    100014 => '请求客户端错误',
 
-    // 11 开头为用户错误
-    USER_ERROR(110000, "用户错误"),
-    USER_SELECT_ERROR(110001, "查询用户错误"),
-    USER_INSERT_ERROR(110002, "添加用户错误"),
-    USER_UPDATE_ERROR(110003, "修改用户错误"),
-    USER_DELETE_ERROR(110004, "删除用户错误");
+    // 11开头为文件上传错误
+    FILE_UPLOAD_ERROR(110000, "文件上传错误"),
+    FILE_UPLOAD_SUFFIX_NOT_ALLOWED(110001, "上传文件类型不支持"),
+    FILE_UPLOAD_SIZE_NOT_ALLOWED(110002, "上传文件过大"),
+    FILE_UPLOAD_TYPE_NOT_ALLOWED(110003, "上传类型不支持"),
+
+
+    // 12 开头为用户错误
+    USER_ERROR(120000, "用户错误"),
+    USER_SELECT_ERROR(120001, "查询用户错误"),
+    USER_INSERT_ERROR(120002, "添加用户错误"),
+    USER_UPDATE_ERROR(120003, "修改用户错误"),
+    USER_DELETE_ERROR(120004, "删除用户错误");
 
     int code;
     String desc;

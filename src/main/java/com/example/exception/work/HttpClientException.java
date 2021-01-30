@@ -13,18 +13,18 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-public class JwtException extends ApiException {
-    ErrorCode errorCode = ErrorCode.ILLEGAL_TOKEN;
+public class HttpClientException extends ApiException {
+    ErrorCode errorCode = ErrorCode.HTTP_CLIENT_ERROR;
 
-    public JwtException(String message) {
+    public HttpClientException(String message) {
         super(message);
     }
 
-    public JwtException(ErrorCode errorCode) {
+    public HttpClientException(ErrorCode errorCode) {
         this.errorCode = errorCode;
     }
 
-    public JwtException(ErrorCode errorCode, String message) {
+    public HttpClientException(ErrorCode errorCode, String message) {
         super(errorCode, message);
     }
 }

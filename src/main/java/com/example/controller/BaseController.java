@@ -2,6 +2,7 @@ package com.example.controller;
 
 import com.example.common.Result;
 import com.example.constant.ErrorCode;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Objects;
 

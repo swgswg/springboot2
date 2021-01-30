@@ -17,6 +17,12 @@ public interface UserMapper {
      */
     List<User> all(User user);
 
+    /**
+     * 分页查询用户
+     * @return
+     */
+    List<User> selectPage();
+
 
     /**
      * 通过id获取
