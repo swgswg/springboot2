@@ -10,12 +10,23 @@ import java.util.Objects;
  * @author song
  */
 public class BaseController {
-    protected Result success(Object data) {
-        return Result.success(data);
+    protected Result success() {
+        return this.success("请求成功", null);
     }
 
-    protected Result success(Object data, String message) {
-        return Result.success(data, message);
+
+    protected Result success(String message) {
+        return this.success(message, null);
+    }
+
+
+    protected Result success(Object data) {
+        return this.success("请求成功", data);
+    }
+
+
+    protected Result success(String message, Object data) {
+        return Result.success(message, data);
     }
 
     protected Result fail(ErrorCode code) {

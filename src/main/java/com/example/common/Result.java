@@ -40,6 +40,16 @@ public class Result implements Serializable {
 
     /**
      * 请求成功
+     * @param message
+     * @return
+     */
+    public static Result success(String message) {
+        return result(true,  ErrorCode.SUCCESS, message, null);
+    }
+
+
+    /**
+     * 请求成功
      * @param data
      * @return
      */
@@ -52,7 +62,7 @@ public class Result implements Serializable {
      * @param data
      * @return
      */
-    public static Result success(Object data, String message) {
+    public static Result success(String message, Object data) {
         return result(true, ErrorCode.SUCCESS, message, data);
     }
 

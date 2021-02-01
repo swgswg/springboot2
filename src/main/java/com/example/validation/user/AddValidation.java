@@ -6,6 +6,9 @@ import lombok.Data;
 
 import javax.validation.Valid;
 
+/**
+ * @author song
+ */
 @Data
 public class AddValidation extends BaseValidation {
     @Valid

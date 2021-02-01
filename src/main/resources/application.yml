@@ -8,6 +8,7 @@ spring:
     static-path-pattern: /resources/**
 
   datasource:
+    type: com.alibaba.druid.pool.DruidDataSource
     url: jdbc:mysql://localhost:3306/blog?characterEncoding=utf-8&serverTimezone=UTC&useSSL=false
     username: root
     password:
@@ -21,12 +22,14 @@ spring:
     timeout: 3000
     lettuce:
       pool:
-        #连接池最下空闲连接, 默认0
-        min-idle: 5
-        #-1不限制,
-        max-active: 200
-        #等待可用连接最大时间/毫秒, 默认值-1(永不超时)
+        #-1不限制, 连接池最大连接数(使用负值表示没有限制) 默认为8
+        max-active: 8
+        #连接池最大阻塞等待时间(使用负值表示没有限制) 默认为-1
         max-wait: 1000
+        #连接池中的最大空闲连接 默认为8
+        max-idle: 8
+        #连接池中的最小空闲连接 默认为 0
+        min-idle: 0
 
   jackson:
     time-zone: Asia/Shanghai
@@ -53,25 +56,25 @@ pagehelper:
   supportMethodsArguments: true
   params: count=countSql
 
-logging:
-  #包的日志级别
-  level:
-    root: warn
-    com.example: warn
-    org.springframework: warn
-  #自定义log信息
-  config: classpath:config/logback.xml
-  pattern:
-    #控制台的日志输出格式
-    console: '%d{yyyy/MM/dd-HH:mm:ss} [%thread] %-5level %logger- %msg%n'
-    #文件的日志输出格式
-    file: '%d{yyyy/MM/dd-HH:mm} [%thread] %-5level %logger- %msg%n'
-  file:
-    #日志名称
-    name: app.log
-  logback:
-    rollingpolicy:
-      #存储的最大值
-      max-file-size: 50MB
-      #保存时间
-      max-history: 7
+#logging:
+#  #包的日志级别
+#  level:
+#    root: warn
+#    com.example: warn
+#    org.springframework: warn
+#  #自定义log信息
+#  config: classpath:config/logback-spring.xml
+#  pattern:
+#    #控制台的日志输出格式
+#    console: '%d{yyyy/MM/dd-HH:mm:ss} [%thread] %-5level %logger- %msg%n'
+#    #文件的日志输出格式
+#    file: '%d{yyyy/MM/dd-HH:mm} [%thread] %-5level %logger- %msg%n'
+#  file:
+#    #日志名称
+#    name: app.log
+#  logback:
+#    rollingpolicy:
+#      #存储的最大值
+#      max-file-size: 50MB
+#      #保存时间
+#      max-history: 7

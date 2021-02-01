@@ -42,22 +42,22 @@ public class UserController extends V1BaseController {
 
     @PostMapping("/add")
     public Result add(@Validated({Insert.class}) @RequestBody User user) {
-        return this.success(userRepo.create(user), "插入成功");
+        return this.success("插入成功", userRepo.create(user));
     }
 
     @PostMapping("/edit")
     public Result edit(@Validated({Update.class}) @RequestBody User user) {
-        return this.success(userRepo.update(user), "修改成功");
+        return this.success("修改成功", userRepo.update(user));
     }
 
     @PostMapping("/del")
     public Result delete(@Validated @RequestBody IdMustBePositiveInteger id) {
-        return this.success(userRepo.delete(id.getId()), "删除成功");
+        return this.success("删除成功", userRepo.delete(id.getId()));
     }
 
     @PostMapping("/count")
     public Result count() {
-        return this.success(userRepo.count(), "统计所有成功");
+        return this.success("统计所有成功", userRepo.count());
     }
 
     @PostMapping("/user-account")

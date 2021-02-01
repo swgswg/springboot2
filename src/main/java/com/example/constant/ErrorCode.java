@@ -17,6 +17,8 @@ public enum ErrorCode {
     INVALID_FORMAT(100005, "请求参数不合法"),
     HTTP_CLIENT_ERROR(100006, "HTTP客户端错误"),
     HTTP_MEDIA_TYPE_NOT_SUPPORTED(100007, "HTTP请求类型不支持"),
+    REDIS_ERROR(100008, "redis错误"),
+
 //    100004 => '尝试非法操作',
 //    100005 => '无权限访问',
 //    100006 => '授权失败（第三方应用账号登陆失败)',
@@ -33,7 +35,6 @@ public enum ErrorCode {
     FILE_UPLOAD_SUFFIX_NOT_ALLOWED(110001, "上传文件类型不支持"),
     FILE_UPLOAD_SIZE_NOT_ALLOWED(110002, "上传文件过大"),
     FILE_UPLOAD_TYPE_NOT_ALLOWED(110003, "上传类型不支持"),
-
 
     // 12 开头为用户错误
     USER_ERROR(120000, "用户错误"),

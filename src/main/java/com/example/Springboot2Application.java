@@ -9,8 +9,11 @@ import javax.annotation.PostConstruct;
 import java.util.TimeZone;
 
 
-@MapperScan("com.example.mapper")
+/**
+ * @author song
+ */
 @SpringBootApplication
+@MapperScan("com.example.mapper")
 public class Springboot2Application {
 
     @PostConstruct
