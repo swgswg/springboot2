@@ -28,7 +28,7 @@ public class LogAspect {
      * 前置通知
      */
     @Before("cut()")
-    public void BeforeCall() {
+    public void beforeCall() {
         log.info("====前置通知start");
 
         log.info("====前置通知end");
@@ -42,7 +42,7 @@ public class LogAspect {
      * @throws Throwable
      */
     @Around(value = "cut()")
-    public Object AroundCall(ProceedingJoinPoint joinPoint) throws Throwable {
+    public Object aroundCall(ProceedingJoinPoint joinPoint) throws Throwable {
         log.info("====环绕通知start");
 
         // 注解所切的方法所在类的全类名

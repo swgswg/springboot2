@@ -2,6 +2,8 @@ package com.example.controller;
 
 import com.example.common.Result;
 import com.example.constant.ErrorCode;
+import com.example.service.JwtService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Objects;

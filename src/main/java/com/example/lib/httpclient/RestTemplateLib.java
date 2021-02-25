@@ -82,9 +82,17 @@ public class RestTemplateLib {
     }
 
 
-    public String doGet(String url, Map<String, Object> param) {
+    public String doGet(String url, Map<String, String> params) {
+        if (params != null) {
+            StringBuilder urlBuilder = new StringBuilder(url);
+            urlBuilder.append("?");
+            for (Map.Entry<String, ?> entry : params.entrySet()) {
+                urlBuilder.append(entry.getKey()).append("=").append(entry.getValue()).append("&");
+            }
+            url = urlBuilder.deleteCharAt(urlBuilder.length() - 1).toString();
+        }
         return this.getRestTemplate()
-                .getForObject(url, String.class, param);
+                .getForObject(url, String.class);
     }
 
 

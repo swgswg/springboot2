@@ -4,5 +4,10 @@
       "name": "logging.org.springframework.web",
       "type": "java.lang.String",
       "description": "Description for logging.org.springframework.web."
-  }
-] }
+    },
+    {
+      "name": "jjwt.secret",
+      "type": "java.lang.String",
+      "description": "Description for jjwt.secret."
+    }
+  ] }

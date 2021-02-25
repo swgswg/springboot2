@@ -1,6 +1,7 @@
 package com.example.exception.handle;
 
 import com.example.common.Result;
+import com.example.common.util.StringHelper;
 import com.example.constant.ErrorCode;
 import com.example.exception.ApiException;
 import com.example.exception.BadRequestException;
@@ -8,6 +9,7 @@ import com.example.exception.ServerErrorException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.BindingResult;
@@ -23,11 +25,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @author song
@@ -35,15 +33,17 @@ import java.util.Set;
 @Slf4j
 @RestControllerAdvice
 public class ExceptionHandle {
+    @Value("${debug}")
+    private static final boolean IS_DEBUG = false;
 
     /**
      * api接口错误
      * @param e
      * @return
      */
+    @ResponseBody
     @ResponseStatus(value = HttpStatus.OK)
     @ExceptionHandler(value = ApiException.class)
-    @ResponseBody
     public Result apiExceptionHandle(ApiException e) {
         return Result.fail(e.getErrorCode(), e.getMessage());
     }
@@ -53,6 +53,7 @@ public class ExceptionHandle {
      * @param e 忽略参数异常
      * @return ResponseResult
      */
+    @ResponseBody
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MissingServletRequestParameterException.class)
     public Result parameterMissingExceptionHandler(MissingServletRequestParameterException e) {
@@ -65,6 +66,7 @@ public class ExceptionHandle {
      * @param e 缺少请求体异常
      * @return ResponseResult
      */
+    @ResponseBody
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public Result parameterBodyMissingExceptionHandler(HttpMessageNotReadableException e) {
@@ -76,6 +78,7 @@ public class ExceptionHandle {
      * @param e
      * @return
      */
+    @ResponseBody
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(InvalidFormatException.class)
     public Result invalidFormatExceptionHandler(InvalidFormatException e){
@@ -93,9 +96,9 @@ public class ExceptionHandle {
      * @param e
      * @return
      */
+    @ResponseBody
     @ResponseStatus(HttpStatus.OK)
     @ExceptionHandler(ConstraintViolationException.class)
-    @ResponseBody
     public Result constraintViolationExceptionHandler(ConstraintViolationException e){
         Set<ConstraintViolation<?>> message = e.getConstraintViolations();
         HashMap<String, Object> map = new HashMap<>();
@@ -113,21 +116,27 @@ public class ExceptionHandle {
      * @param e
      * @return
      */
+    @ResponseBody
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    @ResponseBody
     public Result parameterExceptionHandler(MethodArgumentNotValidException e) {
         BindingResult bindingResult  = e.getBindingResult();
         // 判断异常中是否有错误信息，如果存在就使用异常中的消息，否则使用默认消息
-        if (bindingResult .hasErrors()) {
+        if (bindingResult.hasErrors()) {
             List<ObjectError> errors = bindingResult.getAllErrors();
-            HashMap<String, Object> message = new HashMap<>();
+            StringBuilder message = new StringBuilder();
             if (!errors.isEmpty()) {
                 for (ObjectError error: errors) {
-                    FieldError fieldError = (FieldError) error;
-                    message.put(fieldError.getField(),  error.getDefaultMessage());
+                    if (error instanceof FieldError) {
+                        System.out.println(error.getClass().getName());
+                        FieldError fieldError = (FieldError) error;
+                        message.append(fieldError.getField()).append(error.getDefaultMessage());
+                    } else if (error != null) {
+                        message.append(error.getDefaultMessage());
+                    }
+                    message.append(",");
                 }
-                return Result.fail(ErrorCode.ILLEGAL_ARGUMENT, message.toString());
+                return Result.fail(ErrorCode.ILLEGAL_ARGUMENT, StringHelper.trimEnd(message.toString(), ","));
             }
         }
         return Result.fail(ErrorCode.ILLEGAL_ARGUMENT);
@@ -138,9 +147,9 @@ public class ExceptionHandle {
      * @param e
      * @return
      */
+    @ResponseBody
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(HttpMediaTypeNotSupportedException.class)
-    @ResponseBody
     public Result httpMediaTypeNotSupportedExceptionHandler(HttpMediaTypeNotSupportedException e) {
         return Result.fail(ErrorCode.HTTP_MEDIA_TYPE_NOT_SUPPORTED, e.getMessage());
     }
@@ -151,9 +160,9 @@ public class ExceptionHandle {
      * @param e
      * @return
      */
+    @ResponseBody
     @ResponseStatus(value = HttpStatus.BAD_REQUEST)
     @ExceptionHandler(value = BadRequestException.class)
-    @ResponseBody
     public Result badRequestExceptionHandle(BadRequestException e) {
         log.error("httpStatus异常: " + e.getHttpStatus());
         return Result.result(e.getHttpStatus());
@@ -165,12 +174,26 @@ public class ExceptionHandle {
      * @param e
      * @return
      */
+    @ResponseBody
     @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(value = ServerErrorException.class)
-    @ResponseBody
     public Result serverErrorExceptionHandle(ServerErrorException e) {
         log.error("httpStatus异常: " + e.getHttpStatus());
         return Result.result(e.getHttpStatus());
+    }
+
+
+    /**
+     * 运行时异常
+     * @param e
+     * @return
+     */
+    @ResponseBody
+    @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
+    @ExceptionHandler(value = RuntimeException.class)
+    public Result runTimeExceptionHandle(RuntimeException e) {
+        log.error("运行时异常: " + e.getMessage(), e);
+        return Result.result(HttpStatus.INTERNAL_SERVER_ERROR, this.getMessage(e));
     }
 
 
@@ -179,15 +202,24 @@ public class ExceptionHandle {
      * @param e
      * @return
      */
-    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(value = Exception.class)
     @ResponseBody
+    @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
+    @ExceptionHandler(value = Exception.class)
     public Result exceptionHandle(Exception e) {
         if (e instanceof HttpMessageNotReadableException) {
             return Result.result(HttpStatus.BAD_REQUEST, e.getMessage().substring(0, e.getMessage().indexOf(":")));
         }
         log.error("未知异常: " + e.getMessage(), e);
-        return Result.result(HttpStatus.BAD_REQUEST, e.getMessage());
+        return Result.result(HttpStatus.INTERNAL_SERVER_ERROR, this.getMessage(e));
+    }
+
+
+    private String getMessage(Exception e) {
+        String msg = "服务器错误";
+        if (IS_DEBUG) {
+            msg = e.getMessage();
+        }
+        return msg;
     }
 
 }

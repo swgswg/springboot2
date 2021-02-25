@@ -9,7 +9,7 @@ spring:
 
   datasource:
     type: com.alibaba.druid.pool.DruidDataSource
-    url: jdbc:mysql://localhost:3306/blog?characterEncoding=utf-8&serverTimezone=UTC&useSSL=false
+    url: jdbc:mysql://localhost:3306/api?characterEncoding=utf-8&serverTimezone=Asia/Shanghai&useSSL=false
     username: root
     password:
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -35,6 +35,10 @@ spring:
     time-zone: Asia/Shanghai
     date-format: yyyy-MM-dd HH:mm:ss
 
+  jpa:
+    properties:
+      hibernate.jdbc.time_zone: Asia/Shanghai
+
 mybatis:
   mapper-locations: classpath:mapper/*.xml
   configuration:
@@ -56,14 +60,22 @@ pagehelper:
   supportMethodsArguments: true
   params: count=countSql
 
-#logging:
-#  #包的日志级别
-#  level:
-#    root: warn
-#    com.example: warn
-#    org.springframework: warn
-#  #自定义log信息
-#  config: classpath:config/logback-spring.xml
+# jwt配置
+jjwt:
+  # 加密密钥
+  secret: 98YwMcqff/9CEcDOcRKiXLajvLbhi9riOWutUX/w0uM=
+  # 过期时间/秒
+  expired: 7200
+
+logging:
+  #包的日志级别
+  level:
+    root: warn
+    com.example: warn
+    org.springframework: warn
+  #自定义log信息
+  #config: classpath:config/logback-spring.xml
+  config: classpath:config/log4j2-spring.xml
 #  pattern:
 #    #控制台的日志输出格式
 #    console: '%d{yyyy/MM/dd-HH:mm:ss} [%thread] %-5level %logger- %msg%n'

@@ -1,4 +1,4 @@
-package com.example.validation.user;
+package com.example.validation.work.user;
 
 import com.example.model.user.User;
 import com.example.validation.BaseValidation;

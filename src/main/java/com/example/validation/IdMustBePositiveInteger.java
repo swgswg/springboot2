@@ -5,6 +5,9 @@ import lombok.Data;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
+/**
+ * @author song
+ */
 @Data
 public class IdMustBePositiveInteger extends BaseValidation {
     @NotNull(message = "id必须存在")

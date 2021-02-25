@@ -32,4 +32,26 @@ public class StringHelper {
         return result.toString();
     }
 
+    public static String trimEnd(String str, String mask) {
+        if (str == null || "".equals(str)) {
+            return str;
+        }
+
+        if (str.endsWith(mask)) {
+            return str.substring(0, str.length() - 1);
+        }
+        return str;
+    }
+
+    public static String trimStart(String str, String mask) {
+        if (str == null || "".equals(str)) {
+            return str;
+        }
+
+        if (str.startsWith(mask)) {
+            return str.substring(1);
+        }
+        return str;
+    }
+
 }

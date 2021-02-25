@@ -41,7 +41,23 @@ public enum ErrorCode {
     USER_SELECT_ERROR(120001, "查询用户错误"),
     USER_INSERT_ERROR(120002, "添加用户错误"),
     USER_UPDATE_ERROR(120003, "修改用户错误"),
-    USER_DELETE_ERROR(120004, "删除用户错误");
+    USER_DELETE_ERROR(120004, "删除用户错误"),
+
+    // 13开头为菜单错误
+    MENU_ERROR(130000, "菜单错误"),
+    MENU_SELECT_ERROR(130001, "查询菜单错误"),
+    MENU_INSERT_ERROR(130002, "添加菜单错误"),
+    MENU_UPDATE_ERROR(130003, "修改菜单错误"),
+    MENU_DELETE_ERROR(130004, "删除菜单错误"),
+
+    // 14开头为管理员错误
+    ADMIN_ERROR(140000, "管理员错误"),
+    ADMIN_NOT_EXIST(140001, "管理员不存在"),
+    ADMIN_NAME_OR_PWD_ERROR(140002, "用户名或密码错误"),
+    ADMIN_CLOSED(140002, "管理员已禁用"),
+    ADMIN_CREATED_ERROR(140003, "添加失败"),
+    ADMIN_UPDATED_ERROR(140003, "修改失败"),
+    ;
 
     int code;
     String desc;

@@ -21,7 +21,8 @@ public class TokenMiddleware extends BaseMiddleware {
     @Override
     public List<String> router() {
         List<String> routers = new ArrayList<>();
-        routers.add("/index");
+        routers.add("/api/v1/admin/logout");
+        routers.add("/api/v1/admin/signUp");
         return routers;
     }
 

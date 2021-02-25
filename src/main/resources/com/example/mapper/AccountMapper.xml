@@ -17,6 +17,7 @@
         <id property="id" column="aid"></id>
         <result property="uid" column="uid"></result>
         <result property="money" column="money"></result>
+        <!-- 一对一 -->
         <association property="user" column="uid" javaType="com.example.model.user.User">
             <id property="id" column="id"></id>
             <result column="username" property="username"></result>

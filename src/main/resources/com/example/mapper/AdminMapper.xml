@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.mapper.AdminMapper">
+    <resultMap id="BaseMap" type="com.example.model.admin.Admin">
+        <id column="id" property="id" jdbcType="BIGINT"/>
+        <result column="admin_name" property="adminName" jdbcType="VARCHAR"/>
+        <result column="password" property="password" jdbcType="VARCHAR"/>
+        <result column="email" property="email" jdbcType="VARCHAR"/>
+        <result column="mobile" property="mobile" jdbcType="VARCHAR"/>
+        <result column="last_login_ip" property="lastLoginIp" jdbcType="CHAR"/>
+        <result column="last_login_time" property="lastLoginTime" jdbcType="TIMESTAMP"/>
+        <result column="status" property="status" jdbcType="TINYINT"/>
+        <result column="create_admin_id" property="createAdminId" jdbcType="BIGINT"/>
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+        <result column="update_time" property="updateTime" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="table">
+        admin
+    </sql>
+
+    <sql id="baseColumn">
+        id, admin_name, password, email, mobile, status,
+        last_login_ip, last_login_time, create_admin_id,
+        create_time, update_time
+    </sql>
+
+    <select id="getAdminByName" parameterType="java.lang.String" resultType="com.example.model.admin.Admin">
+        select
+        <include refid="baseColumn"></include>
+        from
+        <include refid="table"></include>
+        where admin_name = #{adminName, jdbcType=VARCHAR}
+    </select>
+
+    <insert id="create" parameterType="com.example.model.admin.Admin" >
+        INSERT INTO  <include refid="table"></include>
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="adminName != null">
+                admin_name,
+            </if>
+            <if test="password != null">
+                password,
+            </if>
+            <if test="status != null and status gt 0">
+                status,
+            </if>
+            <if test="email != null">
+                email,
+            </if>
+            <if test="mobile != null">
+                mobile,
+            </if>
+            <if test="lastLoginIp != null">
+                last_login_ip,
+            </if>
+            <if test="lastLoginTime != null">
+                last_login_time,
+            </if>
+            <if test="createAdminId != null and createAdminId gt 0">
+                create_admin_id,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="createTime != null">
+                update_time,
+            </if>
+        </trim>
+        <trim prefix=" values (" suffix=")" suffixOverrides=",">
+            <if test="adminName != null">
+                #{adminName},
+            </if>
+            <if test="password != null">
+                #{password},
+            </if>
+            <if test="status != null and status gt 0">
+                #{status},
+            </if>
+            <if test="email != null">
+                #{email},
+            </if>
+            <if test="mobile != null">
+                #{mobile},
+            </if>
+            <if test="lastLoginIp != null">
+                #{lastLoginIp},
+            </if>
+            <if test="lastLoginTime != null">
+                #{lastLoginTime},
+            </if>
+            <if test="createAdminId != null and createAdminId gt 0">
+                #{createAdminId},
+            </if>
+            <if test="createTime != null">
+                #{createTime},
+            </if>
+            <if test="createTime != null">
+                #{createTime},
+            </if>
+        </trim>
+    </insert>
+
+    <update id="update" parameterType="com.example.model.admin.Admin">
+        update <include refid="table"></include>
+        <set>
+            <if test="adminName != null">
+                admin_name = #{adminName},
+            </if>
+            <if test="password != null">
+                password = #{password},
+            </if>
+            <if test="status != null and status gt 0">
+                status = #{status},
+            </if>
+            <if test="email != null">
+                email = #{email},
+            </if>
+            <if test="mobile != null">
+                mobile = #{mobile},
+            </if>
+            <if test="lastLoginIp != null">
+                last_login_ip = #{lastLoginIp},
+            </if>
+            <if test="lastLoginTime != null">
+                last_login_time = #{lastLoginTime},
+            </if>
+            <if test="createAdminId != null and createAdminId gt 0">
+                create_admin_id = #{createAdminId},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+</mapper>

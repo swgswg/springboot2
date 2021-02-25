@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.mapper.MenuMapper">
+    <resultMap id="BaseMap" type="com.example.model.menu.Menu">
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="parent_id" property="parentId" jdbcType="INTEGER"/>
+        <result column="sort" property="sort" jdbcType="INTEGER"/>
+        <result column="menu_name" property="menuName" jdbcType="VARCHAR"/>
+        <result column="url" property="url" jdbcType="VARCHAR"/>
+        <result column="auth" property="auth" jdbcType="VARCHAR"/>
+        <result column="icon" property="icon" jdbcType="VARCHAR"/>
+        <result column="type" property="type" jdbcType="TINYINT"/>
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+        <result column="update_time" property="updateTime" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="table">
+        menu
+    </sql>
+
+    <select id="all" resultMap="BaseMap">
+        select
+        id,parent_id,sort,menu_name,url,auth,icon,`type`
+        from
+        <include refid="table"></include>
+        order by sort,id
+    </select>
+
+<!--    <insert id="create" parameterType="com.example.model.user.User">-->
+<!--        &lt;!&ndash; keyProperty代表要返回的值名称 order取值AFTER代表插入后的行为 resultType代表返回值的类型&ndash;&gt;-->
+<!--        <selectKey keyProperty="id" order="AFTER" resultType="long">-->
+<!--            select last_insert_id();-->
+<!--        </selectKey>-->
+<!--	    INSERT INTO  m_user-->
+<!--        <trim prefix="(" suffix=")" suffixOverrides=",">-->
+<!--            <if test="username != null">-->
+<!--                username,-->
+<!--            </if>-->
+<!--            <if test="avatar != null">-->
+<!--                avatar,-->
+<!--            </if>-->
+<!--            <if test="status != null">-->
+<!--                status,-->
+<!--            </if>-->
+<!--            <if test="email != null">-->
+<!--                email,-->
+<!--            </if>-->
+<!--            <if test="password != null">-->
+<!--                password,-->
+<!--            </if>-->
+<!--            <if test="created != null">-->
+<!--                created,-->
+<!--            </if>-->
+<!--        </trim>-->
+<!--        <trim prefix=" values (" suffix=")" suffixOverrides=",">-->
+<!--            <if test="username != null">-->
+<!--                #{username},-->
+<!--            </if>-->
+<!--            <if test="avatar != null">-->
+<!--                #{avatar},-->
+<!--            </if>-->
+<!--            <if test="status != null">-->
+<!--                #{status},-->
+<!--            </if>-->
+<!--            <if test="email != null">-->
+<!--                #{email},-->
+<!--            </if>-->
+<!--            <if test="password != null">-->
+<!--                #{password},-->
+<!--            </if>-->
+<!--            <if test="created != null">-->
+<!--                #{created},-->
+<!--            </if>-->
+<!--        </trim>-->
+<!--	</insert>-->
+
+<!--    <update id="update" parameterType="com.example.model.user.User">-->
+<!--        update m_user-->
+<!--        <set>-->
+<!--            <if test="username != null">-->
+<!--                username = ${username},-->
+<!--            </if>-->
+<!--            <if test="avatar != null">-->
+<!--                avatar = ${avatar},-->
+<!--            </if>-->
+<!--            <if test="status != null">-->
+<!--                status = ${status},-->
+<!--            </if>-->
+<!--            <if test="email != null">-->
+<!--                email = ${email},-->
+<!--            </if>-->
+<!--            <if test="password != null">-->
+<!--                password = ${password},-->
+<!--            </if>-->
+<!--            <if test="lastLogin != null">-->
+<!--                lastLogin = ${lastLogin},-->
+<!--            </if>-->
+<!--        </set>-->
+<!--        where id = ${id}-->
+<!--    </update>-->
+<!--    -->
+<!--    <delete id="delete" parameterType="java.lang.Long">-->
+<!--        delete from m_user where id = #{id}-->
+<!--    </delete>-->
+
+<!--    <select id="count" parameterType="long" resultType="long">-->
+<!--        select count(*) from m_user-->
+<!--    </select>-->
+
+</mapper>
