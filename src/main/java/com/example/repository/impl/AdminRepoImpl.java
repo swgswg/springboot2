@@ -103,6 +103,16 @@ public class AdminRepoImpl implements AdminRepo {
         return PageResult.getPageResult(this.getPageInfo(data));
     }
 
+    /**
+     * 通过主键查找
+     * @param id
+     * @return
+     */
+    @Override
+    public Admin selectByPk(long id) {
+        return adminMapper.selectByPk(id);
+    }
+
 
     /**
      * 调用分页插件完成分页
@@ -111,14 +121,8 @@ public class AdminRepoImpl implements AdminRepo {
      */
     @PageAnnotation
     private PageInfo<Admin> getPageInfo(IndexValidate data) {
-        int pageNum = data.getPage();
-        int pageSize = data.getPageSize();
-
-        // 服务实现类通过调用分页插件完成最终的分页查询，关键代码是 PageHelper.startPage(pageNum, pageSize)，将前台分页查询参数传入并拦截MyBtis执行实现分页效果。
-//        PageHelper.startPage(pageNum, pageSize);
-
         List<Admin> admins = adminMapper.selectPage(ConverterUtil.convert(data, Admin.class));
-        return new PageInfo<Admin>(admins);
+        return new PageInfo<>(admins);
     }
 
 

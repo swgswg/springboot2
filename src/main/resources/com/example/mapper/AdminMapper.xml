@@ -34,6 +34,12 @@
         <include refid="table"></include>
     </sql>
 
+    <select id="selectByPk" parameterType="java.lang.Long" resultType="com.example.model.admin.Admin">
+        <include refid="baseSelect"></include>
+        where id = #{id}
+        limit 1
+    </select>
+
     <select id="getAdminByName" parameterType="java.lang.String" resultType="com.example.model.admin.Admin">
         select
         <include refid="baseColumn"></include>
@@ -41,11 +47,6 @@
         <include refid="table"></include>
         where admin_name = #{adminName, jdbcType=VARCHAR}
         limit 1
-    </select>
-
-    <select id="count" resultType="java.lang.Integer">
-        select count(*) from
-        <include refid="table"></include>
     </select>
 
     <select id="selectPage" resultType="com.example.model.admin.Admin">

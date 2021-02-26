@@ -7,9 +7,9 @@ import com.github.pagehelper.PageHelper;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
-import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.stereotype.Component;
+
 
 /**
  * @author song
@@ -20,8 +20,8 @@ public class PageAspect {
     /**
      * 切入点签名
      */
-//    @Pointcut("@annotation(com.example.annotation.PageAnnotation)")
-    @Pointcut("execution(* com.example.repository.impl.*.*(..))")
+    @Pointcut("@annotation(com.example.annotation.PageAnnotation)")
+//    @Pointcut("execution(* com.example.repository.impl.*.*(..))")
     private void page() {}
 
 
@@ -35,11 +35,10 @@ public class PageAspect {
     public Object aroundCall(ProceedingJoinPoint joinPoint) throws Throwable {
         int pageNum = 1;
         int pageSize = 10;
-
+        PrintUtil.print("page aspect");
         // 获取参数
         Object[] arguments = joinPoint.getArgs();
         for (Object argument : arguments) {
-            PrintUtil.print(argument);
             Page page = ConverterUtil.convert(argument, Page.class);
             if (page != null) {
                 pageNum = page.getPage();

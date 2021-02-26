@@ -8,6 +8,7 @@ import com.example.model.Page;
 import com.example.model.admin.Admin;
 import com.example.repository.AdminRepo;
 import com.example.service.JwtService;
+import com.example.validation.IdMustBePositiveInteger;
 import com.example.validation.work.admin.IndexValidate;
 import com.example.validation.work.admin.LoginValidate;
 import com.example.validation.work.admin.SignUpValidate;
@@ -62,12 +63,15 @@ public class AdminController extends V1BaseController {
         return this.success("注册成功");
     }
 
-
     @PostMapping("/page")
     public Result index(@RequestBody IndexValidate data) {
         return this.success(adminRepo.selectPage(data));
     }
 
+    @PostMapping("/show")
+    public Result show(@Validated() @RequestBody IdMustBePositiveInteger id) {
+        return this.success(adminRepo.selectByPk(id.getId()));
+    }
 
     private String genTokenByAdminId(long id) {
         Map<String, Long> idMap = new HashMap<>(1);

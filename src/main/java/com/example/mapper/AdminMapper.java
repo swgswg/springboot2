@@ -13,9 +13,17 @@ import java.util.List;
 public interface AdminMapper {
     /**
      * 分页查询
+     * @param admin
      * @return
      */
     List<Admin> selectPage(Admin admin);
+
+    /**
+     * 通过主键查找
+     * @param id
+     * @return
+     */
+    Admin selectByPk(long id);
 
     /**
      * 根据名称获取管理员
