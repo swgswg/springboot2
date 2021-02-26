@@ -34,4 +34,6 @@ public class SignUpValidate extends BaseValidation {
 
     @Mobile
     private String mobile;
+
+    private Long createAdminId;
 }

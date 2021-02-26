@@ -27,12 +27,37 @@
         create_time, update_time
     </sql>
 
+    <sql id="baseSelect">
+        select
+        <include refid="baseColumn"></include>
+        from
+        <include refid="table"></include>
+    </sql>
+
     <select id="getAdminByName" parameterType="java.lang.String" resultType="com.example.model.admin.Admin">
         select
         <include refid="baseColumn"></include>
         from
         <include refid="table"></include>
         where admin_name = #{adminName, jdbcType=VARCHAR}
+        limit 1
+    </select>
+
+    <select id="count" resultType="java.lang.Integer">
+        select count(*) from
+        <include refid="table"></include>
+    </select>
+
+    <select id="selectPage" resultType="com.example.model.admin.Admin">
+        <include refid="baseSelect"></include>
+        <where>
+            <if test="adminName != null">
+                and admin_name = #{adminName}
+            </if>
+            <if test="status != null and status gt 0">
+                and status = #{status}
+            </if>
+        </where>
     </select>
 
     <insert id="create" parameterType="com.example.model.admin.Admin" >

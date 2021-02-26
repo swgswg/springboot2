@@ -1,7 +1,13 @@
 package com.example.repository;
 
+import com.example.model.Page;
+import com.example.model.PageResult;
 import com.example.model.admin.Admin;
+import com.example.validation.work.admin.IndexValidate;
+import com.example.validation.work.admin.SignUpValidate;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 
 /**
@@ -16,6 +22,13 @@ public interface AdminRepo {
      * @return
      */
     Admin login(String adminName, String password);
+
+    /**
+     * 注册
+     * @param signUpValidate
+     * @return
+     */
+    boolean signUp(SignUpValidate signUpValidate);
 
 
     /**
@@ -34,6 +47,8 @@ public interface AdminRepo {
      * @return
      */
     boolean updateLoginInfo(long id, String ip);
+
+    PageResult selectPage(IndexValidate data);
 
     /**
      * 添加

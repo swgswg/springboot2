@@ -20,7 +20,7 @@ public class Md5Digest implements DigestInterface {
     @Override
     public String encrypt(String plaintext) {
         try {
-            return SecureUtil.md5("123456");
+            return SecureUtil.md5(plaintext);
         } catch (Exception e) {
             throw new RuntimeException(e.getMessage());
         }

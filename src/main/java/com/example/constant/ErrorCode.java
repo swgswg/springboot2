@@ -54,9 +54,10 @@ public enum ErrorCode {
     ADMIN_ERROR(140000, "管理员错误"),
     ADMIN_NOT_EXIST(140001, "管理员不存在"),
     ADMIN_NAME_OR_PWD_ERROR(140002, "用户名或密码错误"),
-    ADMIN_CLOSED(140002, "管理员已禁用"),
-    ADMIN_CREATED_ERROR(140003, "添加失败"),
-    ADMIN_UPDATED_ERROR(140003, "修改失败"),
+    ADMIN_CLOSED(140003, "管理员已禁用"),
+    ADMIN_CREATED_ERROR(140004, "添加失败"),
+    ADMIN_UPDATED_ERROR(140005, "修改失败"),
+    ADMIN_NAME_EXISTED(140006, "用户名已经存在"),
     ;
 
     int code;

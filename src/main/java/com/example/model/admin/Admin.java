@@ -24,6 +24,8 @@ import java.util.Date;
 @EqualsAndHashCode(callSuper = true)
 @Component
 public class Admin extends BaseModel {
+    public static final String DEFAULT_PASSWORD = "123456";
+
     @Id
     @Positive(message = "ID必须为正整数")
     @NotNull(message = "ID必须存在", groups = {Update.class, Delete.class})
@@ -65,16 +67,24 @@ public class Admin extends BaseModel {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", locale = "zh", timezone = "GMT+8")
     private Date updateTime;
 
+
     /**
-     * 密码加密
-     * @param password
+     * 比较密码
+     * @param pwd 未加密的密码明文
+     * @return
      */
-    public void setPassword(String password) {
-        this.password = passwordEncrypt(password);
+    public boolean comparePassword(String pwd) {
+        return this.getPassword().equals(passwordEncrypt(pwd));
     }
 
-    public static String passwordEncrypt(String password) {
-        return Md5Digest.md5(password).toUpperCase();
+
+    /**
+     * 密码加密
+     * @param pwd 未加密的密码明文
+     * @return
+     */
+    public static String passwordEncrypt(String pwd) {
+        return Md5Digest.md5(pwd).toUpperCase();
     }
 
 }

@@ -4,9 +4,11 @@ import com.example.common.Result;
 import com.example.common.util.ConverterUtil;
 import com.example.common.util.IpUtil;
 import com.example.model.Insert;
+import com.example.model.Page;
 import com.example.model.admin.Admin;
 import com.example.repository.AdminRepo;
 import com.example.service.JwtService;
+import com.example.validation.work.admin.IndexValidate;
 import com.example.validation.work.admin.LoginValidate;
 import com.example.validation.work.admin.SignUpValidate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,10 +57,15 @@ public class AdminController extends V1BaseController {
 
     @PostMapping("/signUp")
     public Result signUp(@Validated() @RequestBody SignUpValidate signUpValidate, HttpServletRequest request) {
-        Admin admin = ConverterUtil.convert(signUpValidate, Admin.class);
-        admin.setCreateAdminId(this.getAdminIdByToken(request));
-        adminRepo.create(admin);
+        signUpValidate.setCreateAdminId(this.getAdminIdByToken(request));
+        adminRepo.signUp(signUpValidate);
         return this.success("注册成功");
+    }
+
+
+    @PostMapping("/page")
+    public Result index(@RequestBody IndexValidate data) {
+        return this.success(adminRepo.selectPage(data));
     }
 
 

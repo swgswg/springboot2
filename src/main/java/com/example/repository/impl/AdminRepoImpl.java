@@ -1,15 +1,23 @@
 package com.example.repository.impl;
 
+import com.example.annotation.PageAnnotation;
+import com.example.common.util.PrintUtil;
+import com.example.common.util.ConverterUtil;
 import com.example.constant.ErrorCode;
 import com.example.exception.work.AdminException;
 import com.example.mapper.AdminMapper;
+import com.example.model.PageResult;
 import com.example.model.admin.Admin;
 import com.example.model.admin.AdminStatusEnum;
 import com.example.repository.AdminRepo;
+import com.example.validation.work.admin.IndexValidate;
+import com.example.validation.work.admin.SignUpValidate;
+import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.List;
 
 
 /**
@@ -23,7 +31,8 @@ public class AdminRepoImpl implements AdminRepo {
     @Override
     public Admin login(String adminName, String password) {
         Admin admin = this.getAdminByName(adminName, true);
-        if (!Admin.passwordEncrypt(password).equals(admin.getPassword())) {
+        PrintUtil.print(admin.getPassword(), password, Admin.passwordEncrypt(password));
+        if (!admin.comparePassword(password)) {
             throw new AdminException(ErrorCode.ADMIN_NAME_OR_PWD_ERROR);
         }
 
@@ -35,17 +44,44 @@ public class AdminRepoImpl implements AdminRepo {
     }
 
     /**
+     * 注册
+     * @param signUpValidate
+     * @return
+     */
+    @Override
+    public boolean signUp(SignUpValidate signUpValidate) {
+        Admin admin = ConverterUtil.convert(signUpValidate, Admin.class);
+        admin.setStatus(AdminStatusEnum.OPEN.getValue());
+        return this.create(admin);
+    }
+
+    /**
      * 根据名称获取管理员
      * @return
      */
     @Override
     public Admin getAdminByName(String adminName, boolean isThrowException) {
+        if (adminName == null) {
+            throw new AdminException("缺少名称参数");
+        }
         Admin admin = adminMapper.getAdminByName(adminName);
         if (admin == null && isThrowException) {
             throw new AdminException(ErrorCode.ADMIN_NOT_EXIST);
         }
         return admin;
     }
+
+
+    public boolean isAdminNameExist(String adminName) {
+        // 用户名不存在
+        if (this.getAdminByName(adminName, false) == null) {
+            return false;
+        }
+
+        // 用户名存在
+        return true;
+    }
+
 
     /**
      * 修改登录信息
@@ -62,6 +98,29 @@ public class AdminRepoImpl implements AdminRepo {
         return this.update(admin);
     }
 
+    @Override
+    public PageResult selectPage(IndexValidate data) {
+        return PageResult.getPageResult(this.getPageInfo(data));
+    }
+
+
+    /**
+     * 调用分页插件完成分页
+     * @param data
+     * @return
+     */
+    @PageAnnotation
+    private PageInfo<Admin> getPageInfo(IndexValidate data) {
+        int pageNum = data.getPage();
+        int pageSize = data.getPageSize();
+
+        // 服务实现类通过调用分页插件完成最终的分页查询，关键代码是 PageHelper.startPage(pageNum, pageSize)，将前台分页查询参数传入并拦截MyBtis执行实现分页效果。
+//        PageHelper.startPage(pageNum, pageSize);
+
+        List<Admin> admins = adminMapper.selectPage(ConverterUtil.convert(data, Admin.class));
+        return new PageInfo<Admin>(admins);
+    }
+
 
     /**
      * 添加
@@ -73,7 +132,16 @@ public class AdminRepoImpl implements AdminRepo {
         if (admin == null) {
             throw new AdminException("缺少参数");
         }
+
+        // 判断用户名是否存在
+        if (this.isAdminNameExist(admin.getAdminName())) {
+            throw new AdminException(ErrorCode.ADMIN_NAME_EXISTED);
+        }
         admin.setCreateTime(new Date());
+        if (admin.getPassword() == null) {
+            admin.setPassword(Admin.DEFAULT_PASSWORD);
+        }
+        admin.setPassword(Admin.passwordEncrypt(admin.getPassword()));
         boolean res = adminMapper.create(admin);
         if (!res) {
             throw new AdminException(ErrorCode.ADMIN_CREATED_ERROR);

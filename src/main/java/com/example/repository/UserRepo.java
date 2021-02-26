@@ -28,7 +28,7 @@ public interface UserRepo {
      * @param page 自定义，统一分页查询请求
      * @return PageResult 自定义，统一分页查询结果
      */
-    PageResult findPage(Page page );
+    PageResult findPage(Page page);
 
     /**
      * 通过id获取

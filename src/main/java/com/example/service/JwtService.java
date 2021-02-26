@@ -103,7 +103,7 @@ public class JwtService {
         } catch (PrematureJwtException e){
             throw new JwtException("令牌接收时间还没到");
         } catch (ExpiredJwtException e){
-            throw new JwtException("令牌的已经过期");
+            throw new JwtException("令牌已过期");
         } catch (UnsupportedJwtException e){
             throw new JwtException("不支持该令牌");
         } catch (MalformedJwtException e){
