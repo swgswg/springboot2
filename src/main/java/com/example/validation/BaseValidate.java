@@ -16,7 +16,7 @@ import java.util.Set;
  * @author song
  */
 @Data
-public class BaseValidation {
+public class BaseValidate {
 //    @Null：   元素为 null
 //    @NotNull ：   元素不为 null
 //    @AssertTrue ：    元素为 true

@@ -13,7 +13,7 @@ import javax.validation.constraints.NotNull;
 @Data
 @Component
 @EqualsAndHashCode(callSuper = true)
-public class IdMustBePositiveInteger extends BaseValidation {
+public class IdMustBePositiveInteger extends BaseValidate {
     @NotNull(message = "id必须存在")
     @Min(value = 1, message = "id必须是正整数")
     private Long id;

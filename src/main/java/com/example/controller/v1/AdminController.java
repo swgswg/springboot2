@@ -73,6 +73,11 @@ public class AdminController extends V1BaseController {
         return this.success(adminRepo.selectByPk(id.getId()));
     }
 
+//    @PostMapping("/edit")
+//    public Result edit() {
+//
+//    }
+
     private String genTokenByAdminId(long id) {
         Map<String, Long> idMap = new HashMap<>(1);
         idMap.put("id", id);

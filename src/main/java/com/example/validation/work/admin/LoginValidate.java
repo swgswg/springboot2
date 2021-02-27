@@ -1,6 +1,6 @@
 package com.example.validation.work.admin;
 
-import com.example.validation.BaseValidation;
+import com.example.validation.BaseValidate;
 import lombok.Data;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.stereotype.Component;
@@ -12,7 +12,7 @@ import javax.validation.constraints.NotBlank;
  */
 @Data
 @Component
-public class LoginValidate extends BaseValidation {
+public class LoginValidate extends BaseValidate {
     @NotBlank(message = "管理员名称不能为空")
     @Length(max = 20, min = 5, message = "管理员名长度为5~20位")
     private String adminName;

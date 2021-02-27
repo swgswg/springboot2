@@ -1,6 +1,6 @@
 package com.example.validation.work.admin;
 
-import com.example.validation.BaseValidation;
+import com.example.validation.BaseValidate;
 import com.example.validation.validator.Confirm;
 import com.example.validation.validator.Mobile;
 import lombok.Data;
@@ -16,7 +16,7 @@ import javax.validation.constraints.NotBlank;
 @Data
 @Component
 @Confirm(first = "password", second = "repassword")
-public class SignUpValidate extends BaseValidation {
+public class SignUpValidate extends BaseValidate {
     @NotBlank(message = "管理员名称不能为空")
     @Length(max = 20, min = 5, message = "管理员名长度为5~20位")
     private String adminName;

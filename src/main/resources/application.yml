@@ -40,7 +40,7 @@ spring:
       hibernate.jdbc.time_zone: Asia/Shanghai
 
 mybatis:
-  mapper-locations: classpath:mapper/*.xml
+  mapper-locations: classpath:com/example/mapper/*.xml
   configuration:
     #启用驼峰命名
     map-underscore-to-camel-case: true

@@ -1,11 +1,8 @@
 package com.example.validation.work.admin;
 
-import com.example.model.Delete;
 import com.example.model.Insert;
-import com.example.model.Select;
-import com.example.model.Update;
 import com.example.model.admin.AdminStatusEnum;
-import com.example.validation.BaseValidation;
+import com.example.validation.BaseValidate;
 import com.example.validation.validator.Enumeration;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -22,7 +19,7 @@ import javax.validation.constraints.Positive;
 @Data
 @Component
 @EqualsAndHashCode(callSuper = true)
-public class IndexValidate extends BaseValidation {
+public class IndexValidate extends BaseValidate {
     @Positive(message = "页码必须为正整数")
     @Min(value = 1, message = "页码必须是正整数")
     private int page;
