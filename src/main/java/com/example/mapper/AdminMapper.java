@@ -16,7 +16,7 @@ public interface AdminMapper {
      * @param admin
      * @return
      */
-    List<Admin> selectPage(Admin admin);
+    List<Admin> selectByWhere(Admin admin);
 
     /**
      * 通过主键查找
@@ -32,7 +32,7 @@ public interface AdminMapper {
      */
      Admin getAdminByName(String adminName);
 
-     boolean create(Admin adminModel);
+     Long create(Admin admin);
 
      boolean update(Admin adminModel);
 }

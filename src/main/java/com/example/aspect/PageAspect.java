@@ -3,12 +3,16 @@ package com.example.aspect;
 import com.example.common.util.ConverterUtil;
 import com.example.common.util.PrintUtil;
 import com.example.model.Page;
+import com.example.model.PageResult;
 import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 
 /**
@@ -35,10 +39,10 @@ public class PageAspect {
     public Object aroundCall(ProceedingJoinPoint joinPoint) throws Throwable {
         int pageNum = 1;
         int pageSize = 10;
-        PrintUtil.print("page aspect");
         // 获取参数
         Object[] arguments = joinPoint.getArgs();
         for (Object argument : arguments) {
+            PrintUtil.print(argument);
             Page page = ConverterUtil.convert(argument, Page.class);
             if (page != null) {
                 pageNum = page.getPage();
@@ -51,6 +55,8 @@ public class PageAspect {
         PageHelper.startPage(pageNum, pageSize);
 
         //执行目标方法，并获得对应方法的返回值
-        return joinPoint.proceed();
+        Object data = joinPoint.proceed();
+
+        return PageResult.getPageResult(new PageInfo((List) data));
     }
 }

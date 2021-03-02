@@ -20,93 +20,19 @@
         menu
     </sql>
 
-    <select id="all" resultMap="BaseMap">
+    <sql id="baseColumn">
+        id, parent_id, sort, menu_name, url, auth, icon, `type`
+    </sql>
+
+    <sql id="baseSelect">
         select
-        id,parent_id,sort,menu_name,url,auth,icon,`type`
+        <include refid="baseColumn" />
         from
-        <include refid="table"></include>
-        order by sort,id
+        <include refid="table" />
+    </sql>
+
+    <select id="all" resultMap="BaseMap">
+        <include refid="baseSelect" />
+        order by sort, id
     </select>
-
-<!--    <insert id="create" parameterType="com.example.model.user.User">-->
-<!--        &lt;!&ndash; keyProperty代表要返回的值名称 order取值AFTER代表插入后的行为 resultType代表返回值的类型&ndash;&gt;-->
-<!--        <selectKey keyProperty="id" order="AFTER" resultType="long">-->
-<!--            select last_insert_id();-->
-<!--        </selectKey>-->
-<!--	    INSERT INTO  m_user-->
-<!--        <trim prefix="(" suffix=")" suffixOverrides=",">-->
-<!--            <if test="username != null">-->
-<!--                username,-->
-<!--            </if>-->
-<!--            <if test="avatar != null">-->
-<!--                avatar,-->
-<!--            </if>-->
-<!--            <if test="status != null">-->
-<!--                status,-->
-<!--            </if>-->
-<!--            <if test="email != null">-->
-<!--                email,-->
-<!--            </if>-->
-<!--            <if test="password != null">-->
-<!--                password,-->
-<!--            </if>-->
-<!--            <if test="created != null">-->
-<!--                created,-->
-<!--            </if>-->
-<!--        </trim>-->
-<!--        <trim prefix=" values (" suffix=")" suffixOverrides=",">-->
-<!--            <if test="username != null">-->
-<!--                #{username},-->
-<!--            </if>-->
-<!--            <if test="avatar != null">-->
-<!--                #{avatar},-->
-<!--            </if>-->
-<!--            <if test="status != null">-->
-<!--                #{status},-->
-<!--            </if>-->
-<!--            <if test="email != null">-->
-<!--                #{email},-->
-<!--            </if>-->
-<!--            <if test="password != null">-->
-<!--                #{password},-->
-<!--            </if>-->
-<!--            <if test="created != null">-->
-<!--                #{created},-->
-<!--            </if>-->
-<!--        </trim>-->
-<!--	</insert>-->
-
-<!--    <update id="update" parameterType="com.example.model.user.User">-->
-<!--        update m_user-->
-<!--        <set>-->
-<!--            <if test="username != null">-->
-<!--                username = ${username},-->
-<!--            </if>-->
-<!--            <if test="avatar != null">-->
-<!--                avatar = ${avatar},-->
-<!--            </if>-->
-<!--            <if test="status != null">-->
-<!--                status = ${status},-->
-<!--            </if>-->
-<!--            <if test="email != null">-->
-<!--                email = ${email},-->
-<!--            </if>-->
-<!--            <if test="password != null">-->
-<!--                password = ${password},-->
-<!--            </if>-->
-<!--            <if test="lastLogin != null">-->
-<!--                lastLogin = ${lastLogin},-->
-<!--            </if>-->
-<!--        </set>-->
-<!--        where id = ${id}-->
-<!--    </update>-->
-<!--    -->
-<!--    <delete id="delete" parameterType="java.lang.Long">-->
-<!--        delete from m_user where id = #{id}-->
-<!--    </delete>-->
-
-<!--    <select id="count" parameterType="long" resultType="long">-->
-<!--        select count(*) from m_user-->
-<!--    </select>-->
-
 </mapper>

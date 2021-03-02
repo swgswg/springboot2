@@ -3,11 +3,11 @@ package com.example.controller;
 import com.example.annotation.ResponseResult;
 import com.example.common.Result;
 import com.example.common.util.HttpServletRequestUtil;
-import com.example.common.util.JSONParser;
-import com.example.exception.ApiException;
+import com.example.common.util.PrintUtil;
+import com.example.model.adminrole.AdminRole;
+import com.example.repository.AdminRoleRepo;
 import com.example.repository.UserRepo;
 import com.example.service.RedisService;
-import com.example.service.log.Log;
 import com.example.service.thirdPartApi.gaoDeMap.IpLocation;
 import com.example.validation.IdMustBePositiveInteger;
 import com.example.validation.IpValidate;
@@ -26,6 +26,7 @@ import javax.validation.Valid;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 
@@ -41,6 +42,9 @@ public class IndexController extends BaseController {
 
     @Autowired
     RedisService redis;
+
+    @Autowired
+    AdminRoleRepo adminRoleRepo;
 
     @RequestMapping(value = "/index")
     public Result index() {
@@ -128,6 +132,13 @@ public class IndexController extends BaseController {
     public Result ip(@Valid @RequestBody IpValidate ip) {
         Map<String, Object> param = new HashMap<>();
         return this.success("获取IP地址", (new IpLocation().third(ip.getIp())));
+    }
+
+    @PostMapping("/admin-role")
+    public Result adminRole(HttpServletRequest request) {
+        List<AdminRole> roleIds = adminRoleRepo.selectByWhere(null);
+        PrintUtil.print(roleIds);
+        return this.success("admin-role", roleIds);
     }
 
 }

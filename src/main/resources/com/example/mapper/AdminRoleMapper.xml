@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.mapper.AdminRoleMapper">
+    <resultMap id="BaseMap" type="com.example.model.adminrole.AdminRole">
+        <id column="id" property="id" jdbcType="BIGINT"/>
+        <result column="admin_id" property="adminId" jdbcType="BIGINT"/>
+        <result column="role_id" property="roleId" jdbcType="BIGINT"/>
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="table">
+        admin_role
+    </sql>
+
+    <sql id="baseColumn">
+        id, admin_id, role_id, create_time
+    </sql>
+
+    <sql id="baseSelect">
+        select
+        <include refid="baseColumn"></include>
+        from
+        <include refid="table"></include>
+    </sql>
+
+    <select id="selectByWhere" parameterType="com.example.model.adminrole.AdminRole" resultType="com.example.model.adminrole.AdminRole">
+        <include refid="baseSelect"></include>
+        <where>
+            <if test="id != null and id gt 0">
+                and id = #{id}
+            </if>
+            <if test="adminId != null and adminId gt 0">
+                and admin_id = #{adminId}
+            </if>
+            <if test="roleId != null and roleId gt 0">
+                and role_id = #{roleId}
+            </if>
+        </where>
+    </select>
+
+    <select id="selectRoleIdsByAdminId" parameterType="java.lang.Long" resultType="java.lang.Long">
+        select role_id from
+        <include refid="table"></include>
+        where admin_id = #{adminId}
+    </select>
+
+    <insert id="create" parameterType="com.example.model.adminrole.AdminRole" >
+        INSERT INTO  <include refid="table"></include>
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="adminId != null and adminId gt 0">
+                admin_id,
+            </if>
+            <if test="roleId != null and roleId gt 0">
+                role_id,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+        </trim>
+        <trim prefix=" values (" suffix=")" suffixOverrides=",">
+            <if test="adminId != null and adminId gt 0">
+                #{adminId},
+            </if>
+            <if test="roleId != null and roleId gt 0">
+                #{roleId},
+            </if>
+            <if test="createTime != null">
+                #{createTime},
+            </if>
+        </trim>
+    </insert>
+
+    <insert id="batchCreate" parameterType="java.util.List">
+        INSERT INTO <include refid="table"></include>
+        (admin_id, role_id, create_time)
+        values
+        <foreach collection="list" item="item" index="index" separator=",">
+            (
+            #{item.adminId},
+            #{item.roleId},
+            #{item.createTime}
+            )
+        </foreach>
+    </insert>
+
+    <delete id="deleteByAdminIdRoleIds" parameterType="com.example.model.adminrole.AdminRole">
+        delete from
+        <include refid="table"></include>
+        <where>
+            <if test="adminId != null and adminId gt 0">
+                and admin_id = #{adminId}
+            </if>
+            <if test="roleIds != null and roleIds.size() gt 0">
+                <foreach collection="roleIds" open="and role_id in (" close=")" item="roleId" separator=",">
+                    #{roleId}
+                </foreach>
+            </if>
+        </where>
+    </delete>
+
+</mapper>

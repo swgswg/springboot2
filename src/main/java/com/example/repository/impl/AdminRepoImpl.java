@@ -1,21 +1,25 @@
 package com.example.repository.impl;
 
 import com.example.annotation.PageAnnotation;
+import com.example.common.util.ListUtil;
 import com.example.common.util.PrintUtil;
 import com.example.common.util.ConverterUtil;
 import com.example.constant.ErrorCode;
 import com.example.exception.work.AdminException;
 import com.example.mapper.AdminMapper;
-import com.example.model.PageResult;
 import com.example.model.admin.Admin;
 import com.example.model.admin.AdminStatusEnum;
+import com.example.model.adminrole.AdminRole;
 import com.example.repository.AdminRepo;
+import com.example.repository.AdminRoleRepo;
+import com.example.validation.work.admin.EditValidate;
 import com.example.validation.work.admin.IndexValidate;
 import com.example.validation.work.admin.SignUpValidate;
-import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -28,10 +32,12 @@ public class AdminRepoImpl implements AdminRepo {
     @Autowired
     AdminMapper adminMapper;
 
+    @Autowired
+    AdminRoleRepo adminRoleRepo;
+
     @Override
     public Admin login(String adminName, String password) {
         Admin admin = this.getAdminByName(adminName, true);
-        PrintUtil.print(admin.getPassword(), password, Admin.passwordEncrypt(password));
         if (!admin.comparePassword(password)) {
             throw new AdminException(ErrorCode.ADMIN_NAME_OR_PWD_ERROR);
         }
@@ -52,8 +58,15 @@ public class AdminRepoImpl implements AdminRepo {
     public boolean signUp(SignUpValidate signUpValidate) {
         Admin admin = ConverterUtil.convert(signUpValidate, Admin.class);
         admin.setStatus(AdminStatusEnum.OPEN.getValue());
-        return this.create(admin);
+        Long id = this.create(admin);
+
+        // 存在角色ids传参时, 添加管理员角色关联
+        List<Long> paramRoleIds = signUpValidate.getRoleIds();
+        adminRoleRepo.batchCreateByAdminRoleIds(id, paramRoleIds);
+
+        return true;
     }
+
 
     /**
      * 根据名称获取管理员
@@ -72,7 +85,11 @@ public class AdminRepoImpl implements AdminRepo {
     }
 
 
-    public boolean isAdminNameExist(String adminName) {
+    /**
+     * @param adminName
+     * @return
+     */
+    private boolean isAdminNameExist(String adminName) {
         // 用户名不存在
         if (this.getAdminByName(adminName, false) == null) {
             return false;
@@ -98,11 +115,6 @@ public class AdminRepoImpl implements AdminRepo {
         return this.update(admin);
     }
 
-    @Override
-    public PageResult selectPage(IndexValidate data) {
-        return PageResult.getPageResult(this.getPageInfo(data));
-    }
-
     /**
      * 通过主键查找
      * @param id
@@ -114,15 +126,68 @@ public class AdminRepoImpl implements AdminRepo {
     }
 
 
+    @Override
+    public List<Admin> selectByWhere(IndexValidate data) {
+        return adminMapper.selectByWhere(ConverterUtil.convert(data, Admin.class));
+    }
+
+
     /**
-     * 调用分页插件完成分页
+     * 分页条件查询
      * @param data
      * @return
      */
+    @Override
     @PageAnnotation
-    private PageInfo<Admin> getPageInfo(IndexValidate data) {
-        List<Admin> admins = adminMapper.selectPage(ConverterUtil.convert(data, Admin.class));
-        return new PageInfo<>(admins);
+    public Object selectByWherePage(IndexValidate data) {
+        return this.selectByWhere(data);
+    }
+
+    @Override
+    public boolean edit(EditValidate data) {
+        Admin admin = ConverterUtil.convert(data, Admin.class);
+        boolean res = this.update(admin);
+
+        // 存在角色ids传参时, 修改管理员关联角色
+        if (res && (admin.getRoleIds() != null) && (admin.getRoleIds().size() > 0)) {
+            List<Long> paramRoleIds = admin.getRoleIds();
+            adminRoleRepo.createOrUpdateRole(admin.getId(), paramRoleIds);
+        }
+
+        return true;
+    }
+
+    /**
+     * 启用
+     *
+     * @param id
+     * @return
+     */
+    @Override
+    public boolean open(Long id) {
+        return this.status(id, AdminStatusEnum.OPEN.getValue());
+    }
+
+    /**
+     * 禁用
+     *
+     * @param id
+     * @return
+     */
+    @Override
+    public boolean close(Long id) {
+        return this.status(id, AdminStatusEnum.CLOSE.getValue());
+    }
+
+
+    private boolean status(Long id, int status) {
+        if (id == null || id <= 0) {
+            throw new AdminException("参数缺失status");
+        }
+        Admin admin = new Admin();
+        admin.setId(id);
+        admin.setStatus(status);
+        return this.update(admin);
     }
 
 
@@ -132,26 +197,30 @@ public class AdminRepoImpl implements AdminRepo {
      * @return
      */
     @Override
-    public boolean create(Admin admin) {
+    public Long create(Admin admin) {
         if (admin == null) {
-            throw new AdminException("缺少参数");
+            throw new AdminException("缺少参数create");
         }
 
         // 判断用户名是否存在
         if (this.isAdminNameExist(admin.getAdminName())) {
             throw new AdminException(ErrorCode.ADMIN_NAME_EXISTED);
         }
-        admin.setCreateTime(new Date());
-        if (admin.getPassword() == null) {
-            admin.setPassword(Admin.DEFAULT_PASSWORD);
+
+        // 设置密码
+        String password = admin.getPassword();
+        if (password== null) {
+            password = Admin.DEFAULT_PASSWORD;
         }
-        admin.setPassword(Admin.passwordEncrypt(admin.getPassword()));
-        boolean res = adminMapper.create(admin);
-        if (!res) {
+        admin.setPassword(Admin.passwordEncrypt(password));
+
+        admin.setCreateTime(new Date());
+        Long id = adminMapper.create(admin);
+        if (id == null || id < 0) {
             throw new AdminException(ErrorCode.ADMIN_CREATED_ERROR);
         }
 
-        return true;
+        return id;
     }
 
     /**
@@ -161,10 +230,24 @@ public class AdminRepoImpl implements AdminRepo {
      */
     @Override
     public boolean update(Admin admin) {
-        if (admin == null) {
-            throw new AdminException("缺少参数");
+        if (admin == null || admin.getId() == null || admin.getId() <= 0) {
+            throw new AdminException("缺少参数update");
         }
+        Admin adminData = this.selectByPk(admin.getId());
+
+        if (admin.getAdminName() != null && !adminData.getAdminName().equals(admin.getAdminName())) {
+            // 判断用户名是否存在
+            if (this.isAdminNameExist(admin.getAdminName())) {
+                throw new AdminException(ErrorCode.ADMIN_NAME_EXISTED);
+            }
+        }
+
+        if (admin.getPassword() != null) {
+            admin.setPassword(Admin.passwordEncrypt(admin.getPassword()));
+        }
+
         admin.setUpdateTime(new Date());
+
         boolean res = adminMapper.update(admin);
         if (!res) {
             throw new AdminException(ErrorCode.ADMIN_UPDATED_ERROR);

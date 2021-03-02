@@ -49,7 +49,7 @@
         limit 1
     </select>
 
-    <select id="selectPage" resultType="com.example.model.admin.Admin">
+    <select id="selectByWhere" resultType="com.example.model.admin.Admin">
         <include refid="baseSelect"></include>
         <where>
             <if test="adminName != null">
@@ -61,7 +61,10 @@
         </where>
     </select>
 
-    <insert id="create" parameterType="com.example.model.admin.Admin" >
+    <insert id="create" parameterType="com.example.model.admin.Admin">
+        <selectKey keyProperty="id" resultType="long" order="AFTER">
+            select LAST_INSERT_ID()
+        </selectKey>
         INSERT INTO  <include refid="table"></include>
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="adminName != null">

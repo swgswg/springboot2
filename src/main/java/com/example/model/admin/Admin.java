@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 
 import javax.validation.constraints.*;
 import java.util.Date;
+import java.util.List;
 
 /**
  * @author song
@@ -67,6 +68,7 @@ public class Admin extends BaseModel {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", locale = "zh", timezone = "GMT+8")
     private Date updateTime;
 
+    private List<Long> roleIds;
 
     /**
      * 比较密码

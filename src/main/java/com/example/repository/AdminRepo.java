@@ -1,10 +1,13 @@
 package com.example.repository;
 
-import com.example.model.PageResult;
 import com.example.model.admin.Admin;
+import com.example.validation.work.admin.EditValidate;
 import com.example.validation.work.admin.IndexValidate;
 import com.example.validation.work.admin.SignUpValidate;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 
 /**
@@ -25,6 +28,7 @@ public interface AdminRepo {
      * @param signUpValidate
      * @return
      */
+    @Transactional(rollbackFor = Exception.class)
     boolean signUp(SignUpValidate signUpValidate);
 
 
@@ -46,11 +50,19 @@ public interface AdminRepo {
     boolean updateLoginInfo(long id, String ip);
 
     /**
-     * 分页查询
+     * 通过条件查询
      * @param data
      * @return
      */
-    PageResult selectPage(IndexValidate data);
+    List<Admin> selectByWhere(IndexValidate data);
+
+    /**
+     * 通过条件查询
+     * 分页
+     * @param data
+     * @return
+     */
+    Object selectByWherePage(IndexValidate data);
 
     /**
      * 通过主键查找
@@ -60,11 +72,33 @@ public interface AdminRepo {
     Admin selectByPk(long id);
 
     /**
-     * 添加
-     * @param adminModel
+     * 修改
+     * @param data
      * @return
      */
-    boolean create(Admin adminModel);
+    @Transactional(rollbackFor = Exception.class)
+    boolean edit(EditValidate data);
+
+    /**
+     * 启用
+     * @param id
+     * @return
+     */
+    boolean open(Long id);
+
+    /**
+     * 禁用
+     * @param id
+     * @return
+     */
+    boolean close(Long id);
+
+    /**
+     * 添加
+     * @param admin
+     * @return
+     */
+    Long create(Admin admin);
 
     /**
      * 修改
@@ -72,4 +106,5 @@ public interface AdminRepo {
      * @return
      */
     boolean update(Admin adminModel);
+
 }

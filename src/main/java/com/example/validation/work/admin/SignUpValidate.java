@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import java.util.List;
 
 /**
  * @author song
@@ -36,4 +37,6 @@ public class SignUpValidate extends BaseValidate {
     private String mobile;
 
     private Long createAdminId;
+
+    private List<Long> roleIds;
 }

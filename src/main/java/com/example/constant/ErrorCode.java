@@ -58,6 +58,9 @@ public enum ErrorCode {
     ADMIN_CREATED_ERROR(140004, "添加失败"),
     ADMIN_UPDATED_ERROR(140005, "修改失败"),
     ADMIN_NAME_EXISTED(140006, "用户名已经存在"),
+
+    // 15开头为管理员角色关联关系
+    ADMIN_ROLE_ERROR(150000, "管理员角色关联错误"),
     ;
 
     int code;

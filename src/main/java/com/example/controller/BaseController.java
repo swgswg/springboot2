@@ -16,16 +16,13 @@ public class BaseController {
         return this.success("请求成功", null);
     }
 
-
     protected Result success(String message) {
         return this.success(message, null);
     }
 
-
     protected Result success(Object data) {
         return this.success("请求成功", data);
     }
-
 
     protected Result success(String message, Object data) {
         return Result.success(message, data);
